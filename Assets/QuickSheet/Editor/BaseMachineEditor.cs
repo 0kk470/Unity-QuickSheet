@@ -79,9 +79,9 @@ namespace UnityQuickSheet
             }
             else
             {
+                CreateDataClassScript(m, sp);
                 CreateScriptableObjectClassScript(m, sp);
                 CreateScriptableObjectEditorClassScript(m, sp);
-                CreateDataClassScript(m, sp);
                 CreateAssetCreationScript(m, sp);
             }
 
@@ -98,7 +98,6 @@ namespace UnityQuickSheet
             sp.className = machine.WorkSheetName;
             sp.dataClassName = machine.WorkSheetName + "Data";
             sp.template = GetTemplate("ScriptableObjectClass");
-
             // check the directory path exists
             string fullPath = TargetPathForClassScript(machine.WorkSheetName);
             string folderPath = Path.GetDirectoryName(fullPath);

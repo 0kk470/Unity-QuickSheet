@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Reflection;
 ///
 /// !!! Machine generated code !!!
 ///
@@ -21,6 +21,8 @@ public class $ClassName : ScriptableObject
     // Note: initialize in OnEnable() not here.
     public $DataClassName[] dataArray;
     
+	private Dictionary<int, $DataClassName> m_DataDic = new Dictionary<int, $DataClassName>();
+	
     void OnEnable()
     {		
 //#if UNITY_EDITOR
@@ -33,8 +35,26 @@ public class $ClassName : ScriptableObject
         // 		
         if (dataArray == null)
             dataArray = new $DataClassName[0];
-
+		for(int i = 0;i < dataArray.Length; ++i)
+		{
+			var key = dataArray[i].$FirstMemberName;
+            if (m_DataDic.ContainsKey(key))
+                continue;
+            m_DataDic.Add(key, dataArray[i]);
+		}
     }
+	
+	public Dictionary<int, $DataClassName> Get$DataClassNameDic()
+	{
+		return m_DataDic;
+	}
+	
+	public $DataClassName Get$DataClassName(int id)
+	{
+		$DataClassName data;
+        m_DataDic.TryGetValue(id, out data);
+        return data;
+	}
     
     //
     // Highly recommand to use LINQ to query the data sources.

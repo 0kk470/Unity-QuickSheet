@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Reflection;
 ///
 /// !!! Machine generated code !!!
 ///
@@ -21,6 +21,8 @@ public class ExcelExample : ScriptableObject
     // Note: initialize in OnEnable() not here.
     public ExcelExampleData[] dataArray;
     
+	private Dictionary<int, ExcelExampleData> m_DataDic = new Dictionary<int, ExcelExampleData>();
+	
     void OnEnable()
     {		
 //#if UNITY_EDITOR
@@ -33,8 +35,26 @@ public class ExcelExample : ScriptableObject
         // 		
         if (dataArray == null)
             dataArray = new ExcelExampleData[0];
-
+		for(int i = 0;i < dataArray.Length; ++i)
+		{
+			var key = dataArray[i].Id;
+            if (m_DataDic.ContainsKey(key))
+                continue;
+            m_DataDic.Add(key, dataArray[i]);
+		}
     }
+	
+	public Dictionary<int, ExcelExampleData> GetExcelExampleDataDic()
+	{
+		return m_DataDic;
+	}
+	
+	public ExcelExampleData GetExcelExampleData(int id)
+	{
+		ExcelExampleData data;
+        m_DataDic.TryGetValue(id, out data);
+        return data;
+	}
     
     //
     // Highly recommand to use LINQ to query the data sources.

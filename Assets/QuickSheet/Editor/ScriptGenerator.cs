@@ -42,7 +42,8 @@ namespace UnityQuickSheet
                     m_Indentation += "  ";
             }
         }
-        
+       
+
         private string ClassName
         {
             get
@@ -130,10 +131,12 @@ namespace UnityQuickSheet
         {
             m_ScriptPrescription = scriptPrescription;
         }
-        
+
         /// <summary>
         /// Replace markdown keywords in the template text file which is currently read in.
         /// </summary>
+        ///
+        private static Dictionary<string, string> m_FirstMembers = new Dictionary<string, string>();
         public override string ToString ()
         {
             m_Text = m_ScriptPrescription.template;
@@ -153,7 +156,8 @@ namespace UnityQuickSheet
             m_Text = m_Text.Replace ("$AssetPostprocessorClass", AssetPostprocessorClass);
             m_Text = m_Text.Replace ("$IMPORT_PATH", ImportedFilePath);
             m_Text = m_Text.Replace ("$ASSET_PATH", AssetFilePath);
-            
+            if (m_FirstMembers.ContainsKey(DataClassName))
+                m_Text = m_Text.Replace("$FirstMemberName", m_FirstMembers[DataClassName]);
             // Other replacements
             foreach (KeyValuePair<string, string> kvp in m_ScriptPrescription.mStringReplacements)
                 m_Text = m_Text.Replace (kvp.Key, kvp.Value);
@@ -166,8 +170,17 @@ namespace UnityQuickSheet
                 IndentLevel = match.Groups[1].Value.Length;
                 if (m_ScriptPrescription.memberFields != null)
                 {
-                    foreach(var field in m_ScriptPrescription.memberFields)
+                    for(int i = 0;i < m_ScriptPrescription.memberFields.Length;i++)
                     {
+                        var field = m_ScriptPrescription.memberFields[i];
+                        if(i == 0)
+                        {
+                            if(ClassName.Contains("Data") && DataClassName == "Error_Empty_DataClassName")
+                            {
+                                if (!m_FirstMembers.ContainsKey(ClassName))
+                                    m_FirstMembers.Add(ClassName, field.Name);
+                            }
+                        }
                         WriteMemberField(field);
                         WriteProperty(field);
                         WriteBlankLine();
@@ -175,7 +188,7 @@ namespace UnityQuickSheet
                     m_Text = m_Text.Replace (match.Value + "\n", m_Writer.ToString ());
                 }
             }
-            
+
             // Return the text of the script
             return m_Text;
         }

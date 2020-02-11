@@ -45,7 +45,13 @@ namespace UnityQuickSheet
 
             serializedData = targetObject.FindProperty("dataArray");
             if (serializedData == null)
-                Debug.LogError("Failed to find 'dataArray' member field.");
+            {
+                serializedData = targetObject.FindProperty("dataDic");
+            }
+            if(serializedData == null)
+            {
+                Debug.LogError("Failed to find 'dataArray' or 'dataDic' member field.");
+            }
         }
 
         /// <summary>
