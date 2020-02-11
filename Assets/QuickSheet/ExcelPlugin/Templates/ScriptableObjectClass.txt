@@ -21,7 +21,7 @@ public class $ClassName : ScriptableObject
     // Note: initialize in OnEnable() not here.
     public $DataClassName[] dataArray;
     
-	private Dictionary<int, $DataClassName> m_DataDic = new Dictionary<int, $DataClassName>();
+	private Dictionary<uint, $DataClassName> m_DataDic = new Dictionary<uint, $DataClassName>();
 	
     void OnEnable()
     {		
@@ -44,12 +44,12 @@ public class $ClassName : ScriptableObject
 		}
     }
 	
-	public Dictionary<int, $DataClassName> Get$DataClassNameDic()
+	public Dictionary<uint, $DataClassName> Get$DataClassNameDic()
 	{
 		return m_DataDic;
 	}
 	
-	public $DataClassName Get$DataClassName(int id)
+	public $DataClassName Get$DataClassName(uint id)
 	{
 		$DataClassName data;
         m_DataDic.TryGetValue(id, out data);

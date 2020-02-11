@@ -21,7 +21,7 @@ public class ExcelExample : ScriptableObject
     // Note: initialize in OnEnable() not here.
     public ExcelExampleData[] dataArray;
     
-	private Dictionary<int, ExcelExampleData> m_DataDic = new Dictionary<int, ExcelExampleData>();
+	private Dictionary<uint, ExcelExampleData> m_DataDic = new Dictionary<uint, ExcelExampleData>();
 	
     void OnEnable()
     {		
@@ -44,12 +44,12 @@ public class ExcelExample : ScriptableObject
 		}
     }
 	
-	public Dictionary<int, ExcelExampleData> GetExcelExampleDataDic()
+	public Dictionary<uint, ExcelExampleData> GetExcelExampleDataDic()
 	{
 		return m_DataDic;
 	}
 	
-	public ExcelExampleData GetExcelExampleData(int id)
+	public ExcelExampleData GetExcelExampleData(uint id)
 	{
 		ExcelExampleData data;
         m_DataDic.TryGetValue(id, out data);

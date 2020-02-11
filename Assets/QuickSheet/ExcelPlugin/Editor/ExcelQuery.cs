@@ -227,7 +227,7 @@ namespace UnityQuickSheet
         {
             object value = null;
 
-            if (t == typeof(float) || t == typeof(double) || t == typeof(short) || t == typeof(int) || t == typeof(long))
+            if (t == typeof(uint) || t == typeof(float) || t == typeof(double) || t == typeof(short) || t == typeof(int) || t == typeof(long))
             {
                 if (cell.CellType == NPOI.SS.UserModel.CellType.Numeric)
                 {
@@ -246,6 +246,32 @@ namespace UnityQuickSheet
                         value = Convert.ToInt32(cell.StringCellValue);
                     if (t == typeof(long))
                         value = Convert.ToInt64(cell.StringCellValue);
+                    if(t == typeof(uint))
+                    {
+                        uint tmpValue = 0;
+                        if (cell.StringCellValue == "-" || string.IsNullOrEmpty(cell.StringCellValue))
+                            tmpValue = 0;
+                        else if (!uint.TryParse(cell.StringCellValue.ToString(), out tmpValue))
+                        {
+                            byte[] idIntBytes = System.Text.Encoding.UTF8.GetBytes(cell.StringCellValue);
+                            if (idIntBytes.Length == 4)
+                            {
+                                tmpValue = 0| ((uint)idIntBytes[0] << 24)
+                                            | ((uint)idIntBytes[1] << 16)
+                                            | ((uint)idIntBytes[2] << 8)
+                                            | ((uint)idIntBytes[3] << 0);
+                            }
+                            else if (idIntBytes.Length > 4)
+                            {
+                                Debug.LogErrorFormat("ID:[{0}] is too long,length shoudn't be larger than 4",cell.StringCellValue);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogErrorFormat("ID:[{0}] is not the 4-char format,convert to Numeric", cell.StringCellValue);
+                        }
+                        value = tmpValue;
+                    }
                 }
                 else if (cell.CellType == NPOI.SS.UserModel.CellType.Formula)
                 {

@@ -18,7 +18,7 @@ MonoBehaviour:
   sheetName: Example.xlsx
   workSheetName: ExcelExample
   columnHeaderList:
-  - type: 3
+  - type: 4
     name: Id
     isEnable: 0
     isArray: 0
@@ -30,7 +30,7 @@ MonoBehaviour:
     name: Strength
     isEnable: 0
     isArray: 0
-  - type: 7
+  - type: 8
     name: Difficulty
     isEnable: 0
     isArray: 0

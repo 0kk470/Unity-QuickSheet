@@ -47,6 +47,7 @@ namespace UnityQuickSheet
         String,
         Short,
         Int,
+        UInt,
         Long,
         Float,
         Double,
@@ -92,6 +93,8 @@ namespace UnityQuickSheet
                     return "enum";
                 case CellType.Bool:
                     return "bool";
+                case CellType.UInt:
+                    return "uint";
                 default:
                     return "string";
                 }
