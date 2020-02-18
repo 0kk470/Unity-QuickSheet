@@ -16,6 +16,8 @@ using System.ComponentModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace UnityQuickSheet
 {
@@ -114,12 +116,22 @@ namespace UnityQuickSheet
 
             var result = new List<T>();
 
+            var comments = new List<string>();
+
             int current = 0;
             foreach (IRow row in sheet)
             {
                 if (current < start)
                 {
                     current++; // skip header column.
+                    for(int i = 0;i < row.Cells.Count; i++) //Deserialize Comment
+                    {
+                        var cell = row.Cells[i];
+                        if (cell.CellComment != null)
+                            comments.Add(cell.CellComment.String.ToString());
+                        else
+                            comments.Add(string.Empty);
+                    }
                     continue;
                 }
 
@@ -136,8 +148,18 @@ namespace UnityQuickSheet
                     {
                         try
                         {
-                            var value = ConvertFrom(cell, property.PropertyType);
-                            property.SetValue(item, value, null);
+                            var comment = comments[i]; //批注内容
+
+                            if(comment.Contains("Bitwise") || comment.Contains("位组合"))
+                            {
+                                uint value = ConverBitwise(cell, comment);
+                                property.SetValue(item, value, null);
+                            }
+                            else
+                            {
+                                var value = ConvertFrom(cell, property.PropertyType);
+                                property.SetValue(item, value, null);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -336,6 +358,79 @@ namespace UnityQuickSheet
 
             // for all other types, convert its corresponding type.
             return Convert.ChangeType(value, t);
+        }
+
+        private Dictionary<string, int> bitwise_dic = new Dictionary<string, int>();
+        private uint ConverBitwise(ICell cell,string comment)
+        {
+            uint result = 0;
+            bitwise_dic.Clear();
+            var pattern = @"\[([\s\S]*?)::([0-9]+)\]"; //[bitname::bitvalue]
+            var matches = Regex.Matches(comment, pattern);
+            foreach (Match match in matches)
+            {
+                var key = match.Groups[1].Value;
+                var value = int.Parse(match.Groups[2].Value);
+                if (!bitwise_dic.ContainsKey(key))
+                    bitwise_dic.Add(key, value);
+            }
+            var bitnames = cell.StringCellValue.Split('|');
+            for(int i = 0; i < bitnames.Length; i++)
+            {
+                var bitname = bitnames[i];
+                if (bitwise_dic.ContainsKey(bitname))
+                    result |= (uint)1 << bitwise_dic[bitname];
+                else
+                    Debug.LogErrorFormat("Unknown bitname:{0}", bitname);
+            }
+            return result;
+        }
+
+        public enum TestType
+        {
+
+        }
+
+
+        StringBuilder enumbuilder = new StringBuilder();
+        private string DeserializeEnum(string EnumName, string Comment)
+        {
+            if (string.IsNullOrEmpty(EnumName))
+                return string.Empty;
+            enumbuilder.Clear();
+            enumbuilder.AppendLine("public enum " + EnumName + "{");
+            var pattern = @"\[([\s\S]*?)::([0-9]+)\]"; //[enum_name::enum_value]
+            var matches = Regex.Matches(Comment, pattern);
+            foreach (Match match in matches)
+            {
+                var name = match.Groups[1].Value;
+                var value = int.Parse(match.Groups[2].Value);
+                enumbuilder.AppendFormat("\t{0} = {1},\n", name, value);
+            }
+            enumbuilder.AppendLine("}");
+            return enumbuilder.ToString();
+        }
+
+        public string GetEnumDefine()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (sheet != null)
+            {
+                var row = sheet.GetRow(0);
+                if(row != null)
+                {
+                    foreach(var cell in row.Cells)
+                    {
+                        if(cell.CellComment != null)
+                        {
+                            var comment = cell.CellComment.String.ToString();
+                            if (comment.Contains("Enum") || comment.Contains("枚举"))
+                                sb.AppendLine(DeserializeEnum(cell.StringCellValue, comment));
+                        }
+                    }
+                }
+            }
+            return sb.ToString();
         }
     }
 }

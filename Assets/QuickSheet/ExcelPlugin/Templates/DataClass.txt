@@ -5,6 +5,8 @@ using System.Collections;
 /// !!! Machine generated code !!!
 /// !!! DO NOT CHANGE Tabs to Spaces !!!
 /// 
+$EnumDefineName
+
 [System.Serializable]
 public class $ClassName
 {

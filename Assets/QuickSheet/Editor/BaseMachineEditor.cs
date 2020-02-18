@@ -83,6 +83,7 @@ namespace UnityQuickSheet
                 CreateScriptableObjectClassScript(m, sp);
                 CreateScriptableObjectEditorClassScript(m, sp);
                 CreateAssetCreationScript(m, sp);
+                CreateDataClassScript(machine, sp);
             }
 
             AssetDatabase.Refresh();
@@ -195,7 +196,6 @@ namespace UnityQuickSheet
             }
 
             List<MemberFieldData> fieldList = new List<MemberFieldData>();
-
             //FIXME: replace ValueType to CellType and support Enum type.
             foreach (ColumnHeader header in machine.ColumnHeaderList)
             {

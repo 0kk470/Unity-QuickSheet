@@ -295,6 +295,8 @@ namespace UnityQuickSheet
             sp.assetPostprocessorClass = machine.WorkSheetName + "AssetPostprocessor";
             sp.template = GetTemplate("PostProcessor");
 
+            var query = new ExcelQuery(machine.excelFilePath, machine.WorkSheetName);
+            sp.enumDefines = query?.GetEnumDefine();
             // write a script to the given folder.
             using (var writer = new StreamWriter(TargetPathForAssetPostProcessorFile(machine.WorkSheetName)))
             {

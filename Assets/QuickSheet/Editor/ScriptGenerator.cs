@@ -152,6 +152,7 @@ namespace UnityQuickSheet
             m_Text = m_Text.Replace ("$WorkSheetClassName", WorkSheetClassName);
             m_Text = m_Text.Replace ("$DataClassName", DataClassName);
             m_Text = m_Text.Replace ("$AssetFileCreateFuncName", AssetFileCreateFuncName);
+            m_Text = m_Text.Replace ("$EnumDefineName", m_ScriptPrescription.enumDefines);
 
             m_Text = m_Text.Replace ("$AssetPostprocessorClass", AssetPostprocessorClass);
             m_Text = m_Text.Replace ("$IMPORT_PATH", ImportedFilePath);

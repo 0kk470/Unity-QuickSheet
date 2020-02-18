@@ -26,6 +26,8 @@ namespace UnityQuickSheet
         public string assetFileCreateFuncName = string.Empty;
         public string template                = string.Empty;
 
+        public string enumDefines             = string.Empty;
+
         public string importedFilePath        = string.Empty; // should start with "Assets" not full path
         public string assetFilepath           = string.Empty; // should start with "Assets" not full path
         public string assetPostprocessorClass = string.Empty;
@@ -53,6 +55,7 @@ namespace UnityQuickSheet
         Double,
         Enum,
         Bool,
+        Bitwise,
     }
 
     public class MemberFieldData
@@ -94,6 +97,8 @@ namespace UnityQuickSheet
                 case CellType.Bool:
                     return "bool";
                 case CellType.UInt:
+                    return "uint";
+                case CellType.Bitwise:
                     return "uint";
                 default:
                     return "string";

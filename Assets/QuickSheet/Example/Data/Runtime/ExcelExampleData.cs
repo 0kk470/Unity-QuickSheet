@@ -5,6 +5,20 @@ using System.Collections;
 /// !!! Machine generated code !!!
 /// !!! DO NOT CHANGE Tabs to Spaces !!!
 /// 
+public enum Difficulty{
+	Easy = 1,
+	Medium = 2,
+	Hard = 3,
+}
+
+public enum MonsterType{
+	Humanoid = 1,
+	Monster = 2,
+	Npc = 3,
+}
+
+
+
 [System.Serializable]
 public class ExcelExampleData
 {
@@ -23,5 +37,13 @@ public class ExcelExampleData
   [SerializeField]
   Difficulty difficulty;
   public Difficulty DIFFICULTY { get {return difficulty; } set { this.difficulty = value;} }
+  
+  [SerializeField]
+  uint properties;
+  public uint Properties { get {return properties; } set { this.properties = value;} }
+  
+  [SerializeField]
+  MonsterType monstertype;
+  public MonsterType MONSTERTYPE { get {return monstertype; } set { this.monstertype = value;} }
   
 }
